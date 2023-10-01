@@ -101,7 +101,7 @@ app.get('/uploads/:videourl', (req, res) => {
 });
 
 // Define a route for deleting videos by ID
-app.delete('/delete/:id', (req, res) => {
+app.get('/delete/:id', (req, res) => {
   const videoId = req.params.id;
 
   // Retrieve the filename of the video to be deleted from the database
