@@ -124,13 +124,13 @@ app.get('/delete/:id', (req, res) => {
           // Delete the associated video file from the 'uploads' directory
           const filePath = path.join(__dirname, 'uploads', filename);
           fs.unlink(filePath, (unlinkErr) => {
-            if (unlinkErr) {
-              console.error(unlinkErr.message);
-              res.status(500).json({ error: 'Error deleting video file' });
-            } else {
-              res.json({ message: 'Video deleted successfully' });
-            }
-          });
+  if (unlinkErr) {
+    console.error('Error deleting video file:', unlinkErr);
+    res.status(500).json({ error: 'Error deleting video file' });
+  } else {
+    res.json({ message: 'Video deleted successfully' });
+  }
+});
         }
       });
     }
