@@ -52,7 +52,11 @@ app.post('/upload', upload.single('video'), (req, res) => {
                 console.error(err.message);
                 res.status(500).send('Error uploading video.');
             } else {
-                res.redirect('/');
+                const videoId = this.lastID; // Get the ID of the inserted record
+                const uploadTime = new Date().toLocaleString(); // Get the upload time
+
+                // Send a success response with video ID and upload time
+                res.send(`Video uploaded successfully. ID: ${videoId}, Upload Time: ${uploadTime}`);
             }
         }
     );
