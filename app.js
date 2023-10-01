@@ -3,6 +3,7 @@ const multer = require('multer');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const app = express();
+const fs = require('fs');
 const port = 3000;
 
 const cors = require('cors'); // Import the 'cors' middleware
