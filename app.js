@@ -47,7 +47,7 @@ app.post('/upload', upload.single('video'), (req, res) => {
     db.run(
         'INSERT INTO videos (title, description, filename) VALUES (?, ?, ?)',
         [title, description, filename],
-        (err) => {
+        function (err) { // Use a regular function here
             if (err) {
                 console.error(err.message);
                 res.status(500).send('Error uploading video.');
