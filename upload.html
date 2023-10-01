@@ -69,6 +69,46 @@
         <input type="file" name="video" id="video" accept="video/*" required><br>
         <button type="submit">Upload</button>
     </form>
+    <!-- Delete video form -->
+    <h2>Delete Video by ID</h2>
+    <form id="deleteForm">
+        <label for="videoId">Video ID:</label>
+        <input type="number" id="videoId" name="videoId" required>
+        <button type="submit">Delete</button>
+    </form>
+
+    <script>
+        // JavaScript code to handle video deletion using the delete form
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteForm = document.getElementById('deleteForm');
+
+    deleteForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const videoIdInput = document.getElementById('videoId');
+        const videoId = videoIdInput.value;
+
+        try {
+            const response = await fetch(`/delete/${videoId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Video deleted successfully');
+                // You can optionally update the list of uploaded videos after deletion
+                // Fetch and display the updated list of videos here
+            } else {
+                const data = await response.json();
+                alert(`Error deleting video: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Error deleting video:', error);
+        }
+    });
+});
+
+    </script>
+    
 </body>
 
 </html>
