@@ -94,6 +94,12 @@ app.get('/fetch-videos', (req, res) => {
     });
 });
 
+// Serve video files from a specific URL path
+app.get('/uploads/:videourl', (req, res) => {
+  const videoUrl = req.params.videourl;
+  res.sendFile(path.join(__dirname, 'uploads', videoUrl));
+});
+
 // Start the Express server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
