@@ -90,7 +90,7 @@ app.post('/upload', upload.single('video'), (req, res) => {
 
 // Define a route for fetching videos
 app.get('/fetch-videos', (req, res) => {
-    db.all('SELECT * FROM videos', (err, videos) => {
+    db.all('SELECT * FROM videos WHERE isDeleted = 0', (err, videos) => { // Only select videos where isDeleted is false
         if (err) {
             console.error(err.message);
             res.status(500).send('Error fetching videos.');
