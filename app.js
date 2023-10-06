@@ -110,15 +110,6 @@ app.get('/uploads/:videourl', (req, res) => {
 app.delete('/delete/:id', (req, res) => {
     const videoId = req.params.id;
 
-    // Update the isDeleted flag in the database instead of deleting
-    db.run('UPDATE videos SET isDeleted = 1 WHERE id = ?', [videoId], (updateErr) => {
-        if (updateErr) {
-            console.error(updateErr.message);
-            res.status(500).json({ error: 'Error deleting video' });
-        } else {
-            res.json({ message: 'Video marked as deleted' });
-        }
-    });
     // Retrieve the filename of the video to be deleted from the database
     db.get('SELECT filename FROM videos WHERE id = ?', [videoId], (err, row) => {
         if (err) {
@@ -128,10 +119,28 @@ app.delete('/delete/:id', (req, res) => {
             res.status(404).json({ error: 'Video not found' });
         } else {
             const filename = row.filename;
+
+            // Delete the video record from the database
+            db.run('DELETE FROM videos WHERE id = ?', [videoId], (deleteErr) => {
+                if (deleteErr) {
+                    console.error(deleteErr.message);
+                    res.status(500).json({ error: 'Error deleting video record' });
+                } else {
+                    // Delete the associated video file from the 'uploads' directory
+                    const filePath = path.join(__dirname, 'uploads', filename);
+                    fs.unlink(filePath, (unlinkErr) => {
+                        if (unlinkErr) {
+                            console.error('Error deleting video file:', unlinkErr);
+                            res.status(500).json({ error: 'Error deleting video file' });
+                        } else {
+                            res.json({ message: 'Video deleted successfully' });
+                        }
+                    });
+                }
+            });
         }
     });
 });
-
 
 
 
