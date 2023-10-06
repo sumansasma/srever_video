@@ -28,15 +28,16 @@ const upload = multer({ storage });
 // Serve uploaded videos statically
 app.use('/uploads', express.static('uploads'));
 
-// Create a table for videos (if it doesn't exist)
 db.run(`
   CREATE TABLE IF NOT EXISTS videos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     description TEXT,
-    filename TEXT
+    filename TEXT,
+    isDeleted BOOLEAN DEFAULT 0
   )
 `);
+
 
 // Define a route for uploading videos
 app.post('/upload', upload.single('video'), (req, res) => {
@@ -108,7 +109,16 @@ app.get('/uploads/:videourl', (req, res) => {
 // Define a route for deleting videos by ID
 app.delete('/delete/:id', (req, res) => {
     const videoId = req.params.id;
-
+    // Update the isDeleted flag in the database instead of deleting
+    db.run('UPDATE videos SET isDeleted = 1 WHERE id = ?', [videoId], (updateErr) => {
+        if (updateErr) {
+            console.error(updateErr.message);
+            res.status(500).json({ error: 'Error deleting video' });
+        } else {
+            res.json({ message: 'Video marked as deleted' });
+        }
+    });
+});
     // Retrieve the filename of the video to be deleted from the database
     db.get('SELECT filename FROM videos WHERE id = ?', [videoId], (err, row) => {
         if (err) {
