@@ -128,25 +128,6 @@ app.delete('/delete/:id', (req, res) => {
             res.status(404).json({ error: 'Video not found' });
         } else {
             const filename = row.filename;
-
-            // Delete the video record from the database
-            db.run('DELETE FROM videos WHERE id = ?', [videoId], (deleteErr) => {
-                if (deleteErr) {
-                    console.error(deleteErr.message);
-                    res.status(500).json({ error: 'Error deleting video record' });
-                } else {
-                    // Delete the associated video file from the 'uploads' directory
-                    const filePath = path.join(__dirname, 'uploads', filename);
-                    fs.unlink(filePath, (unlinkErr) => {
-                        if (unlinkErr) {
-                            console.error('Error deleting video file:', unlinkErr);
-                            res.status(500).json({ error: 'Error deleting video file' });
-                        } else {
-                            res.json({ message: 'Video deleted successfully' });
-                        }
-                    });
-                }
-            });
         }
     });
 });
